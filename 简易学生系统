@@ -1,0 +1,153 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#define N 100
+typedef struct sx
+{
+	int xh;
+	char xm[20];
+	char xb[5];
+	int nl; 
+	int ywsj,sxsj,yysj;
+	struct sx *next;
+}xt;
+xt* student;
+int rs=0;
+xt *scan();
+void print(xt *head); 
+void query(xt *head,int xh);
+void dele(int);
+void px(xt *p_head);
+xt *scan()
+{
+	xt *head=NULL,*node=NULL ,*r=NULL;
+	puts("请输入学生的信息：学号[学号输入0[回车]:结束] 姓名  性别  年龄");
+	puts("然后请输入该学生的成绩，分别是数学,语文,英语"); 
+	while(1)
+	{
+		node =(xt *)malloc(sizeof(xt));
+		printf("学生：%d\n",rs+1);
+		scanf("%d",&node->xh);
+		getchar();
+		if(node->xh==0)
+			break;
+		scanf("%s",node->xm);
+		getchar();
+		scanf("%s%d",node->xb,&node->nl);
+		scanf("%d%d%d",&node->ywsj,&node->sxsj,&node->yysj);
+		rs++;
+		if(head==NULL)//首次添加学生信息 保存到头结点
+		{
+			head=node;//头结点
+			r=head;//尾节点
+			r->next=NULL;
+		}else//有学生信息，添加信息保存到尾部的结点
+		{
+			r->next=node;//添加学生信息到尾部的结点的后继结点
+			r=node;//当前节点为尾部的结点
+			r->next=NULL;
+		}
+	}
+	return head;
+}
+void px(xt *head)
+{
+    xt *pb, *pf, temp;
+    pf = head;
+    if(head == NULL)
+	{//链表为空
+	printf("needn't order.\n");
+        return ;
+    }
+    if(head->next == NULL)//链表有1个节点
+        return ;
+    while(pf->next != NULL) 
+	{//以pf指向的节点为基准节点
+        pb = pf->next;//pb从基准点的下一个节点开始
+        while(pb != NULL) 
+		{
+            if(pf->xh > pb->xh) 
+			{
+                temp = *pf;
+                *pf = *pb;
+                *pb = temp;
+                temp.next = pf->next;
+                pf->next = pb->next;
+                pb->next = temp.next;
+            }
+            pb = pb->next;
+        }
+pf = pf->next;
+    }
+}
+void print(xt *head)
+{
+	puts("\n你输入的数据安装学号从小到大的排序为\n");
+	while(head!=NULL)
+	{
+		printf("学号:%d,姓名:%s,性别:%s,年龄：%d\n",head->xh,head->xm,head->xb,head->nl);
+		printf("数学:%d,语文:%d,英语:%d\n",head->ywsj,head->sxsj,head->yysj);
+		head=head->next;
+	}
+}
+void  query(xt *head,int xh)
+{
+	while(head!=NULL)
+	{
+		if(xh==head->xh)
+			break;
+		head=head->next;
+	}
+	if(head!=NULL)
+	{
+		printf("该学生学号:%d,姓名:%s,性别:%s,年龄：%d\n",head->xh,head->xm,head->xb,head->nl);
+		printf("数学:%d,语文:%d,英语:%d\n",head->ywsj,head->sxsj,head->yysj);
+	}
+	else
+		printf("not found");
+}
+void dele(xt *head,int xh)
+{
+	xt *up,*down,*top;
+	top=head;
+	up=NULL;
+	down=head->next;
+	while(head!=NULL)
+	{
+		if(head->xh==xh)
+		{
+			free(head);
+			head=up;
+			head->next=down;
+			break;
+		}
+		else
+		{
+			up=head;
+			head=head->next;
+			down=head->next;
+		}
+	}
+	printf("删除后的信息：\n");
+	head=top;
+	while(head!=NULL)
+	{
+		printf("学号:%d,姓名:%s,性别:%s,年龄：%d\n",head->xh,head->xm,head->xb,head->nl);
+		printf("数学:%d,语文:%d,英语:%d\n",head->ywsj,head->sxsj,head->yysj);
+		head=head->next;
+	}
+}
+int main()
+{
+	int xh;
+	student=scan();//输入学生信息 
+	px(student);//输出所有学生信息
+	print(student);
+	printf("\n请输入你要查询的学号\n");
+	scanf("%d",&xh);
+	query(student,xh); 
+	printf("\n请输入你要删除的学号\n"); 
+	scanf("%d",&xh);
+	dele(student,xh);
+	return 0;
+}
